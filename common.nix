@@ -1,4 +1,4 @@
-{ config, pkgs, lib, hostName, ... }: {
+{ config, pkgs, lib, ... }: {
   fileSystems = {
     "/boot/firmware" = {
       device = "/dev/disk/by-label/FIRMWARE";
@@ -18,10 +18,19 @@
   };
 
   # Default networking
-  networking = {
-    inherit hostName;
-    useNetworkd = true;
-  };
+  networking.useNetworkd = true;
+
+  # Admin tools
+  environment.systemPackages = with pkgs; [
+    vim
+    curl
+    screen
+    tcpdump
+    iftop
+    btop
+    usbutils
+    file
+  ];
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
@@ -31,6 +40,17 @@
     # Nand
     "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDvc2zp7GYTvm27YptuymOaeDRlHbsfuQyE+9vObP7yWEI3E/GKYh3t9UPnPIF2gEqWEGiUxPjAqvpVZoHqxUL6m2PmKTuhI27//sqop/qp/X1BkzszkaO+m1Rb1qokiOCsSwgOIQCaSZ/jtkzAA6AiF0hw1ZySziz34/4cgNeW0/PdH63qipciZeNP2QIhX7qur2Ye+abueKSt0Uj2lOEpDD4XipnWiyPzfQdo24t5j2l8MyX2g2FQAwJ4nh+W65UoL+LXF2xX7Bukufg6kZCs4q5WsNTpKq4/ILZfW/N4oVEO8XOv0xdZCSnTwyTdcYR9wkcZG7LAWxuM3GIkLx/Z9PhHWyevSVK7+5drlUaeN/N33WAnGhjuoHtd4/3gr/3V+v24/unfJtHz9ZhPeFRmkmzfJvOP6Y8SMLOs0nU80ic5gwIMvA6O1kUHie9xvGEx/ylqj5cHmdgV7aR4oRlWm+XkHU1GH6RZJuyE4x2W4y6K08FxWoGABarCtcMbKGk="
   ];
+
+  # Git for nix foo
+  programs.git = {
+    enable = true;
+    config = {
+      user = {
+        email = "me@jue.yt";
+        name = "Juergen Fitschen";
+      };
+    };
+  };
 
   # Serve mDNS
   services.avahi = {
